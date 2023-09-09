@@ -1,5 +1,7 @@
 import axios from "axios";
-const instance = axios.create({});
+const instance = axios.create({
+  baseURL: "https://auth-server-fmp.vercel.app",
+});
 // Thêm một bộ đón chặn request
 instance.interceptors.request.use(
   function (config) {
