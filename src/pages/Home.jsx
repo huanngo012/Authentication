@@ -15,7 +15,6 @@ const Home = () => {
 
   const refreshToken = async () => {
     const rs = await apiRefreshToken();
-    console.log(rs);
     if (rs?.success) {
       dispatch(
         login({
@@ -31,7 +30,6 @@ const Home = () => {
 
   const handlerTest = async () => {
     const rs = await apiTest();
-    console.log(rs);
     if (rs?.success) {
       setMessage(rs.message);
     } else {
