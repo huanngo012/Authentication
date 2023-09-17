@@ -12,10 +12,12 @@ const Home = () => {
   const { isLoggedIn } = useSelector((state) => state.user);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
+  const [isRequesting, setIsRequesting] = useState(false);
 
   const refreshToken = async () => {
     const rs = await apiRefreshToken();
     if (rs?.success) {
+      console.log(rs);
       dispatch(
         login({
           isLoggedIn: true,
@@ -29,12 +31,16 @@ const Home = () => {
   };
 
   const handlerTest = async () => {
-    const rs = await apiTest();
-    if (rs?.success) {
-      setMessage(rs.message);
-    } else {
-      Swal.fire("Thất bại", rs.message, "error");
-      handlerLogout();
+    if (!isRequesting) {
+      setIsRequesting(true);
+      const rs = await apiTest();
+      if (rs?.success) {
+        setMessage(rs.message);
+        setIsRequesting(false);
+      } else {
+        refreshToken();
+        setIsRequesting(false);
+      }
     }
   };
   const handlerLogout = async () => {
@@ -80,6 +86,7 @@ const Home = () => {
             <button
               className="px-4 py-2 rounded-md text-white bg-main font-semibold my-2 "
               onClick={handlerLogout}
+              disabled={isRequesting}
             >
               Đăng xuất
             </button>
