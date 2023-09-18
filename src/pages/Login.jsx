@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "../components/Button";
 import InputField from "../components/InputField";
 import { Link, useNavigate } from "react-router-dom";
@@ -44,6 +44,7 @@ const Login = () => {
     } else {
       const rs = await apiLogin(data);
       if (rs?.success) {
+        console.log(rs);
         dispatch(
           login({
             isLoggedIn: true,
