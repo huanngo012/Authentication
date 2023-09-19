@@ -66,8 +66,8 @@ const Login = () => {
         alt=""
         className="w-full h-full object-cover"
       />
-      <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center ">
-        <div className="p-8 bg-white rounded-md min-w-[500px] flex flex-col items-center">
+      <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center ">
+        <div className="p-8 bg-white rounded-md sm:w-[450px] w-[320px] flex flex-col items-center">
           <h1 className="text-[28px] font-semibold text-main mb-8">
             {isRegister ? "Đăng ký" : "Đăng nhập"}
           </h1>
