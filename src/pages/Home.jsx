@@ -17,7 +17,6 @@ const Home = () => {
   const refreshToken = async () => {
     const rs = await apiRefreshToken();
     if (rs?.success) {
-      console.log(rs.data.token);
       dispatch(
         login({
           isLoggedIn: true,
@@ -32,23 +31,18 @@ const Home = () => {
 
   const handlerTestAfterRefresh = async () => {
     try {
-      // Gọi refresh token để lấy access token mới
       const refreshResponse = await apiRefreshToken();
 
       if (refreshResponse?.success) {
-        // Lưu access token mới và thông tin user vào Redux
         dispatch(
           login({
             isLoggedIn: true,
-            token: refreshResponse.data.token, // Cập nhật token mới vào Redux
+            token: refreshResponse.data.token,
             current: refreshResponse.data,
           })
         );
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Chờ cho đến khi Redux đã cập nhật token mới (sử dụng await)
-        await new Promise((resolve) => setTimeout(resolve, 100)); // Chờ 100ms (hoặc thời gian phù hợp)
-
-        // Gọi API Test sau khi refresh thành công
         const testResponse = await apiTest();
 
         if (testResponse?.success) {
@@ -59,19 +53,19 @@ const Home = () => {
           // ...
         }
       } else {
-        // Xử lý lỗi khi refresh token không thành công
         dispatch(logout());
         setIsRequesting(false);
       }
     } catch (error) {
-      // Xử lý lỗi xảy ra trong quá trình gọi API
       console.error(error);
+      dispatch(logout());
       setIsRequesting(false);
     }
   };
 
   const handlerTest = async () => {
     if (!isRequesting) {
+      setMessage("");
       setIsRequesting(true);
       const testResponse = await apiTest();
 
@@ -79,11 +73,8 @@ const Home = () => {
         setMessage(testResponse.message);
         setIsRequesting(false);
       } else if (!testResponse?.success) {
-        // Nếu nhận được mã lỗi 401 (Unauthorized), gọi handlerTestAfterRefresh
         handlerTestAfterRefresh();
       } else {
-        // Xử lý lỗi khi gọi API Test
-        // ...
         setIsRequesting(false);
       }
     }
