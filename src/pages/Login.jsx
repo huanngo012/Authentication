@@ -10,7 +10,7 @@ import { login } from "../store/user/userSlice";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [isRequesting, setIsRequesting] = useState(false);
   const [payload, setPayload] = useState({
     email: "",
     fullName: "",
@@ -27,18 +27,25 @@ const Login = () => {
   };
   const [isRegister, setIsRegister] = useState(false);
   const handlerSubmit = useCallback(async () => {
+    if (isRequesting) {
+      return;
+    }
     const { fullName, confirmPassword, ...data } = payload;
+    setIsRequesting(true);
     if (isRegister) {
       if (payload.password !== payload.confirmPassword) {
         Swal.fire("Mật khẩu không trùng khớp", "Vui lòng nhập lại", "error");
+        setIsRequesting(false);
       } else {
         const rs = await apiRegister(payload);
         if (rs.success) {
           Swal.fire("Chúc mừng", rs.message, "success");
           setIsRegister(false);
           resetPayload();
+          setIsRequesting(false);
         } else {
           Swal.fire("Thất bại", rs.message, "error");
+          setIsRequesting(false);
         }
       }
     } else {
@@ -52,9 +59,11 @@ const Login = () => {
             current: rs.data,
           })
         );
+        setIsRequesting(false);
         navigate("/");
       } else {
         Swal.fire("Thất bại", rs.message, " error");
+        setIsRequesting(false);
       }
     }
   }, [payload, isRegister]);
@@ -101,7 +110,7 @@ const Login = () => {
               type="password"
             />
           )}
-          <Button fw handleOnClick={handlerSubmit}>
+          <Button fw handleOnClick={handlerSubmit} disable={isRequesting}>
             {isRegister ? "Đăng ký" : "Đăng nhập"}
           </Button>
           <div className="flex justify-between items-center w-full my-2 text-sm">

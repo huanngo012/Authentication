@@ -1,9 +1,10 @@
 import React, { memo } from "react";
 
-const Button = ({ children, handleOnClick, style, fw }) => {
+const Button = ({ children, handleOnClick, style, fw, disable }) => {
   return (
     <button
       type="button"
+      disabled={disable}
       className={
         style
           ? style
